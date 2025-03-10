@@ -4,11 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
-class Fruit(BaseModel):
-    name: str
+class Query(BaseModel):
+    question: str
+    # response: str
 
-class Fruits(BaseModel):
-    fruits: List[Fruit]
+class Queries(BaseModel):
+    queries: List[Query]
 
 app = FastAPI()
 
@@ -25,18 +26,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-memory_db = {"fruits": []} # simple, in memory database, non-persistent
+memory_db = {"queries": []} # simple, in memory database, non-persistent
 
-# get all the fruits in the db
-@app.get("/fruits", response_model=Fruits)
-def get_fruits():
-    return Fruits(fruits=memory_db["fruits"])
+# get the entire conversation
+@app.get("/queries", response_model=Queries)
+def get_conversation():
+    return Queries(queries=memory_db["queries"])
 
-# add a fruit to the db
-@app.post("/fruits", response_model=Fruit)
-def add_fruit(fruit: Fruit):
-    memory_db["fruits"].append(fruit)
-    return fruit
+# add a query to the db
+@app.post("/queries", response_model=Query)
+def add_query(query: Query):
+    memory_db["queries"].append(query)
+    return query
 
 # run and test API
 if __name__ == "__main__":
