@@ -32,7 +32,11 @@ const QueryList = () => {
       <h2>Query List</h2>
       <ul>
         {queries.map((query, index) => (
-          <li key={index}>{query.question}</li>
+          <li key={index}>
+            {query.question}
+            <br />
+            {query.response}
+            </li>
         ))}
       </ul>
       <AddQueryForm addQuery={addQuery} />
