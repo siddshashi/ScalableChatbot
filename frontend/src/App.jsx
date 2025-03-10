@@ -1,15 +1,15 @@
 import React from 'react';
 import './App.css';
-import FruitList from './components/Fruits';
+import QueryList from './components/Queries';
 
 const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Fruit Management App</h1>
+        <h1>Scalable Chatbot</h1>
       </header>
       <main>
-        <FruitList />
+        <QueryList />
       </main>
     </div>
   );
