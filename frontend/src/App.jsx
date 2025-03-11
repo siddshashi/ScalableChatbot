@@ -1,17 +1,17 @@
 import React from 'react';
 import './App.css';
-import QueryList from './components/Queries';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Welcome from './pages/Welcome';
+import Chat from './pages/Chat'
 
 const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Scalable Chatbot</h1>
-      </header>
-      <main>
-        <QueryList />
-      </main>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
+    </Router>
   );
 };
 

@@ -12,6 +12,7 @@ MODEL_NAME = "mistral"
 MONGO_DB_URL = "mongodb://localhost:27017/" # After deployment, add real production URL
 
 class Query(BaseModel):
+    username: str
     question: str
     response: str = None # Store response from Ollama
 
