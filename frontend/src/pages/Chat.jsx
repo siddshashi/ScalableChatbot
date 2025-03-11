@@ -1,20 +1,8 @@
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import QueryList  from "../components/Queries";
+import { useUsername } from "../hooks/useUsername";
 
 export default function Chat() {
-  const [username, setUsername] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedUsername = Cookies.get("username");
-    if (!storedUsername) {
-      navigate("/"); // Redirect if no username
-    } else {
-      setUsername(storedUsername);
-    }
-  }, [navigate]);
+  const username = useUsername(); 
 
   return (
     <div>
