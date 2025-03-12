@@ -8,7 +8,7 @@ export default function Welcome() {
   
     const handleSubmitUsername = () => {
       if (username.trim()) {
-        Cookies.set("username", username, { expires: 7 }); // Store for 7 days
+        Cookies.set("username", username, { expires: 7 });
         navigate("/chat"); // Redirect to chatbot
       }
     };

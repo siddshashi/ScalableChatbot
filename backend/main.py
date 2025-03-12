@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
@@ -12,7 +12,6 @@ MODEL_NAME = "mistral"
 MONGO_DB_URL = "mongodb://localhost:27017/" # After deployment, add real production URL
 
 class Query(BaseModel):
-    username: str
     question: str
     response: str = None # Store response from Ollama
 
@@ -39,17 +38,19 @@ headers = {
 
 client = pymongo.MongoClient(MONGO_DB_URL)
 db = client["history"]
-collection = db["queries"]
+collection = db["queries"] 
+collection.create_index("username") # index based on username
 
-# Get the entire conversation
+# Get the entire conversation for the user if it exists
 @app.get("/queries", response_model=Queries)
-def get_conversation():
-    query_list = [Query(**doc) for doc in collection.find({}, {"_id": 0})]
+def get_conversation(username: str = Header(..., alias="Username")):
+    user_data = collection.find_one({"username": username}, {"_id": 0, "queries": 1})
+    query_list = user_data["queries"] if user_data else []
     return Queries(queries=query_list)
 
-# Add a query to the db
+# Handle user's question
 @app.post("/queries", response_model=Query)
-def add_query(query: Query):
+def add_query(query: Query, username: str = Header(..., alias="Username")):
     # Send question to Ollama
     payload = {
         "model": MODEL_NAME,
@@ -68,9 +69,15 @@ def add_query(query: Query):
     else:
         query.response = "Error communicating with Ollama."
 
-    collection.insert_one(query.dict()) # TODO: is dictionary conversion slow? 
+    # Add to DB
+    query_dict = query.dict()
+    collection.update_one(
+        {"username": username},
+        {"$push": {"queries": query_dict}},
+        upsert=True  # Creates a new document if user doesn't exist
+    )
     return query
 
-# run and test API
+# Run and test API
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
