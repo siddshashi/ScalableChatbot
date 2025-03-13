@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-app
+  name: ollama-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: model
+      app: ollama
   template:
     metadata:
       labels:
-        app: model
+        app: ollama
     spec:
       containers:
       - name: model
