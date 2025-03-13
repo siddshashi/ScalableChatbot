@@ -1,5 +1,5 @@
 #!/bin/sh
-ollama serve &  
-sleep 2  
-ollama pull mistral  
-fg  
+nohup ollama serve &
+sleep 10
+ollama pull mistral
+tail -f /dev/null
