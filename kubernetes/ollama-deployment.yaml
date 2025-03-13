@@ -1,0 +1,5 @@
+resources:
+  requests:
+    ephemeral-storage: 2Gi
+  limits:
+    ephemeral-storage: 4Gi
