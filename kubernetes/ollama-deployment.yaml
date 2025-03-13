@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: llm-app
+  name: sidd-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: llm
+      app: sidd
   template:
     metadata:
       labels:
-        app: llm
+        app: sidd
     spec:
       containers:
       - name: model
