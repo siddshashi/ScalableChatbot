@@ -1,19 +1,28 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: ollama
+  name: ollama-app
 spec:
-  containers:
-  - name: model
-    image: us-central1-docker.pkg.dev/sarvam-project/model-repo/model-app:v1
-    resources:
-      requests:
-        ephemeral-storage: "4Gi"
-      limits:
-        ephemeral-storage: "8Gi"
-    volumeMounts:
-    - name: ephemeral
-      mountPath: "/tmp"
-  volumes:
-  - name: ephemeral
-    emptyDir: {}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      containers:
+      - name: model
+        image: us-central1-docker.pkg.dev/sarvam-project/model-repo/model-app:v1
+        resources:
+          requests:
+            ephemeral-storage: "4Gi"
+          limits:
+            ephemeral-storage: "8Gi"
+        volumeMounts:
+        - name: ephemeral
+          mountPath: "/tmp"
+      volumes:
+      - name: ephemeral
+        emptyDir: {}
