@@ -17,8 +17,10 @@ spec:
         image: us-central1-docker.pkg.dev/sarvam-project/model-repo/model-app:v1
         resources:
           requests:
+            memory: "4Gi"
             ephemeral-storage: "4Gi"
           limits:
+            memory: "4Gi"
             ephemeral-storage: "8Gi"
         volumeMounts:
         - name: ephemeral
