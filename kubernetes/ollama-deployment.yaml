@@ -1,3 +1,4 @@
+kind: Deployment
 resources:
   requests:
     ephemeral-storage: 2Gi
