@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sarvam-app
+  name: my-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sarvam
+      app: my
   template:
     metadata:
       labels:
-        app: sarvam
+        app: my
     spec:
       containers:
       - name: model
         image: us-central1-docker.pkg.dev/sarvam-project/model-repo/model-app:v1
         resources:
           requests:
-            memory: "4Gi"
-            ephemeral-storage: "4Gi"
-          limits:
-            memory: "4Gi"
+            memory: "8Gi"
             ephemeral-storage: "8Gi"
+          limits:
+            memory: "16Gi"
+            ephemeral-storage: "16Gi"
         volumeMounts:
         - name: ephemeral
           mountPath: "/tmp"
