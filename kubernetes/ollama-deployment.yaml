@@ -1,6 +1,20 @@
-kind: Deployment
-resources:
-  requests:
-    ephemeral-storage: 2Gi
-  limits:
-    ephemeral-storage: 4Gi
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ollama
+spec:
+  containers:
+  - name: ollama
+    image: us-central1-docker.pkg.dev/${PROJECT_ID}/model-repo/model-app:v1
+    resources:
+      requests:
+        ephemeral-storage: "4Gi"
+      limits:
+        ephemeral-storage: "8Gi"
+    volumeMounts:
+    - name: ephemeral
+      mountPath: "/tmp"
+  volumes:
+    - name: ephemeral
+      emptyDir:
+        sizeLimit: 500Mi
