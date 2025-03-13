@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sidd-app
+  name: sarvam-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sidd
+      app: sarvam
   template:
     metadata:
       labels:
-        app: sidd
+        app: sarvam
     spec:
       containers:
       - name: model
