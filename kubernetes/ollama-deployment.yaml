@@ -1,31 +1,16 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  name: ollama-app  # Deployment name
-  labels:
-    app: ollama
+  name: ollama
 spec:
-  selector:
-    matchLabels:
-      app: ollama  # Ensures all pods under this deployment get the same config
-  template:
-    metadata:
-      labels:
-        app: ollama
-    spec:
-      volumes:
-        - name: ollama-storage
-          persistentVolumeClaim:
-            claimName: ollama-pvc  # Reference the PVC
-      containers:
-        - name: ollama-container
-          image: us-central1-docker.pkg.dev/${PROJECT_ID}/model-repo/model-app:v1  # Replace with your image
-          volumeMounts:
-            - mountPath: "/app/data"  # Adjust based on app requirements
-              name: ollama-storage
-          resources:
-            requests:
-              ephemeral-storage: 4Gi
-            limits:
-              ephemeral-storage: 8Gi
-      restartPolicy: Always  # Ensures pods restart if they fail
+  containers:
+  - name: model
+    image: us-central1-docker.pkg.dev/sarvam-project/model-repo/model-app:v1
+    resources:
+      requests:
+        ephemeral-storage: "4Gi"
+      limits:
+        ephemeral-storage: "8Gi"
+    volumeMounts:
+    - name: ephemeral
+      mountPath: "/tmp"
