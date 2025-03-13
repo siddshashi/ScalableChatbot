@@ -1,20 +1,31 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: ollama
+  name: ollama-app  # Deployment name
+  labels:
+    app: ollama
 spec:
-  containers:
-  - name: ollama
-    image: us-central1-docker.pkg.dev/${PROJECT_ID}/model-repo/model-app:v1
-    resources:
-      requests:
-        ephemeral-storage: "4Gi"
-      limits:
-        ephemeral-storage: "8Gi"
-    volumeMounts:
-    - name: ephemeral
-      mountPath: "/tmp"
-  volumes:
-    - name: ephemeral
-      emptyDir:
-        sizeLimit: 500Mi
+  selector:
+    matchLabels:
+      app: ollama  # Ensures all pods under this deployment get the same config
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      volumes:
+        - name: ollama-storage
+          persistentVolumeClaim:
+            claimName: ollama-pvc  # Reference the PVC
+      containers:
+        - name: ollama-container
+          image: us-central1-docker.pkg.dev/${PROJECT_ID}/model-repo/model-app:v1  # Replace with your image
+          volumeMounts:
+            - mountPath: "/app/data"  # Adjust based on app requirements
+              name: ollama-storage
+          resources:
+            requests:
+              ephemeral-storage: 4Gi
+            limits:
+              ephemeral-storage: 8Gi
+      restartPolicy: Always  # Ensures pods restart if they fail
