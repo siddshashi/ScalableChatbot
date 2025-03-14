@@ -1,25 +1,28 @@
 import uvicorn
+import json
+import requests
+import pymongo
 from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-import requests
-import json
-import pymongo
 
-OLLAMA_URL = "http://localhost:11434/api/generate" # After deployment, add real production URL 
+OLLAMA_URL = "http://34.170.52.92/api/generate" 
 MODEL_NAME = "mistral"
-MONGO_DB_URL = "mongodb://localhost:27017/" # After deployment, add real production URL
+MONGO_DB_URL = "mongodb://162.222.183.206:27017" 
 
-class Query(BaseModel):
-    question: str
-    response: str = None # Store response from Ollama
+# Initialize MongoDB client
+client = pymongo.MongoClient(MONGO_DB_URL)
+db = client["history"]
+collection = db["queries"] 
 
-class Queries(BaseModel):
-    queries: List[Query]
+# Ensure index based on username for fast lookups
+collection.create_index("username") 
 
+# FastAPI app instance
 app = FastAPI()
 
+# CORS Configuration
 origins = [
     "http://localhost:5173" # After deployment, add real production URL 
 ]
@@ -36,14 +39,21 @@ headers = {
     "Content-Type": "application/json"
 }
 
-client = pymongo.MongoClient(MONGO_DB_URL)
-db = client["history"]
-collection = db["queries"] 
-collection.create_index("username") # index based on username
+# Pydantic Models
+class Query(BaseModel):
+    question: str
+    response: str = None # Store response from Ollama
 
-# Get the entire conversation for the user if it exists
+class Queries(BaseModel):
+    queries: List[Query]
+
+# Routes
 @app.get("/queries", response_model=Queries)
 def get_conversation(username: str = Header(..., alias="Username")):
+    """
+    Retrieve the entire conversation history for a specific user.
+    The username is sent as a header.
+    """
     user_data = collection.find_one({"username": username}, {"_id": 0, "queries": 1})
     query_list = user_data["queries"] if user_data else []
     return Queries(queries=query_list)
@@ -51,6 +61,10 @@ def get_conversation(username: str = Header(..., alias="Username")):
 # Handle user's question
 @app.post("/queries", response_model=Query)
 def add_query(query: Query, username: str = Header(..., alias="Username")):
+    """
+    Process a user's query, send it to Ollama for a response,
+    store it in MongoDB, and return the response.
+    """
     # Send question to Ollama
     payload = {
         "model": MODEL_NAME,
@@ -58,8 +72,6 @@ def add_query(query: Query, username: str = Header(..., alias="Username")):
         "stream": False
     }
 
-    # TODO: change naming, lots of things called "response"
-    # TODO: implement graceful timeout handling
     response =requests.post(OLLAMA_URL, headers=headers, data=json.dumps(payload))
     if response.status_code == 200:
         response_text = response.text
@@ -78,6 +90,6 @@ def add_query(query: Query, username: str = Header(..., alias="Username")):
     )
     return query
 
-# Run and test API
+# Run the FastAPI application
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
