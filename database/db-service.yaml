@@ -5,10 +5,12 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - protocol: TCP
+    - name: http-port  # Name for the HTTP port
+      protocol: TCP
       port: 80
       targetPort: 80  # HTTP port for web interface
-    - protocol: TCP
+    - name: mongodb-port  # Name for the MongoDB port
+      protocol: TCP
       port: 27017
       targetPort: 27017  # MongoDB port for the native protocol
   selector:
