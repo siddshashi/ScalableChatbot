@@ -24,7 +24,7 @@ app = FastAPI()
 
 # CORS Configuration
 origins = [
-    "http://localhost:5173" # After deployment, add real production URL 
+    "http://34.56.233.16:5173" 
 ]
 
 app.add_middleware(
