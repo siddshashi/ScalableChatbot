@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an instance of axios with the base URL
 const api = axios.create({
-    baseURL: "http://localhost:8000"
+    baseURL: "http://34.59.183.102:8000"
 });
 
 // Export the Axios instance
