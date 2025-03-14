@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-app-service
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80  # HTTP port for web interface
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017  # MongoDB port for the native protocol
+  selector:
+    app: db-app
