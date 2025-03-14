@@ -6,24 +6,24 @@ In this project, I designed, implemented, and deployed a chatbot app powered by 
 ## Core Functionality
 This chatbot allows users to have independent conversations with the chatbot, maintaining each user's conversation history for context. 
 
-![User Journey](user-journey.png)
+![User Journey](photos/user-journey.png)
 
 ## System Architecture
 
 I chose a microservice architecture over a monolithic approach for several reasons:
 
-- Different services require varying amounts of bandwidth, allowing for more flexible scaling.
-- A failure in one service won't bring down the entire system.
-- Microservices enable more cost-effective scaling at larger volumes.
+- Different services require varying amounts of resources, allowing for more flexible scaling
+- A failure in one service won't bring down the entire system
+- Microservices enable more cost-effective scaling at larger volumes
 - Simple integration for future services (mobile frontend, response caching, database queue, authentication, etc.)
 
 Each of these reasons is discussed in more detail in the following sections.
 
-![System Diagram](services.png)
+![System Diagram](photos/services.png)
 
 Each microservice is Dockerized and deployed using Google Kubernetes Engine (GKE), managed by Kubernetes. A Google Cloud HTTP(S) Load Balancer sits at the front, distributing incoming traffic and ensuring high availability. In my kubernetes cluster, each microservice is a separate pod with independent scaling configurations. Microservices communicate with each other over HTTP, as each load balancer has an exposed port.  
 
-![Microservice](microservice.png)
+![Microservice](photos/microservice.png)
 
 ### Chat History Database
 The database is built using MongoDB, a NoSQL database, instead of a traditional SQL-based solution. MongoDB was chosen for its scalability and ability to handle large volumes of unstructured data efficiently. Unlike relational databases, which require predefined schemas, MongoDB’s flexible document-based model allows us to store chat messages dynamically while maintaining high performance. 
@@ -70,4 +70,4 @@ As you can see with the app, the latency can sometimes be incredibly long in spi
 
 Also, because of my modular system, I hope to add new services in the future, including user authentication, common response caching, and a queue to synchronize database writes. 
 
-![Future User Journey](future-user-journey.png)
+![Future User Journey](photos/future-user-journey.png)
